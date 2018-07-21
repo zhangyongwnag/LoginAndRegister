@@ -47,7 +47,12 @@
         v.length >= 1 ? this.passwordStatus = 'success' : this.passwordStatus = ''
       },
       captcha(v){
-        v == this.code ? this.captchaStatus = 'success' : this.captchaStatus = ''
+        if (v){
+          v == this.code ? this.captchaStatus = 'success' : this.captchaStatus = 'warning'
+        }else {
+          this.captchaStatus = ''
+        }
+
       },
       switchStatus(v){
         v ? this.disabledStatus = false : this.disabledStatus = true
