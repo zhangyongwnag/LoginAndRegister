@@ -1,7 +1,7 @@
-const debug = process.env.NODE_ENV !== 'production'
+// const debug = process.env.NODE_ENV !== 'production'
 let host = 'http://hb5.api.okayapi.com'
 // if (debug){
-//   host = '/api'
+  host = '/api'
 // }
 
 export const URL_REGISTER = host + '/?s=App.User.Register'
