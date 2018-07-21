@@ -216,26 +216,37 @@
           url:config.URL_REGISTER,
           data:data,
           callback:(res)=> {
-            localStorage.setItem('userID',res.data.uuid)
-            setTimeout(()=>{
-              this.$indicator.close()
+            this.$indicator.close()
+            if (res.ret == 200){
+              if (res.data.err_code == 1){
+                this.$toast({
+                  message:res.data.err_msg,
+                  pisition:'middle',
+                  duration:3000
+                })
+              }else {
+                localStorage.setItem('userID',res.data.uuid)
+                setTimeout(()=>{
+                  this.$toast({
+                    message:'注册成功',
+                    pisition:'middle',
+                    duration:3000
+                  })
+                },1000)
+                setTimeout(()=>{
+                  this.$router.replace({path:'/Login',query:{phone:this.phone,password:m.md5(this.password)}})
+                },1500)
+              }
+            }else {
               this.$toast({
-                message:'注册成功',
+                message:res.msg,
                 pisition:'middle',
                 duration:3000
               })
-            },1000)
-            setTimeout(()=>{
-              this.$router.replace({path:'/Login',query:{phone:this.phone,password:m.md5(this.password)}})
-            },1500)
+            }
           },
           errorback:(err) => {
-            this.$indicator.close()
-            this.$toast({
-              message:err.msg,
-              pisition:'middle',
-              duration:3000
-            })
+            console.log(err)
           }
         })
       },

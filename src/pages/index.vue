@@ -1,13 +1,21 @@
 <template>
   <div>
-
+    <div class="info">
+      <p style="text-align: center;color: red;font-size: 30px;display: block">用户类型：{{info.rolename}}</p>
+      <p>手机号：{{info.username}}</p>
+      <p>注册IP：{{info.register_ip}}</p>
+      <p>唯一ID：{{info.uuid}}</p>
+      <p>注册时间：{{info.register_time}}</p>
+    </div>
   </div>
 </template>
 <script>
   import * as config from '../config'
   export default {
     data() {
-      return {}
+      return {
+        info:'',
+      }
     },
     mounted(){
       this.$indicator.open({
@@ -22,21 +30,47 @@
         data:data,
         callback:res => {
           this.$indicator.close()
-          this.$router.replace({path:'/Home',query:{info:res.data.info}})
+          if (res.ret == 200){
+            if (res.data.err_code == 1){
+              this.$toast({
+                message:res.data.err_msg,
+                pisition:'middle',
+                duration:3000
+              })
+            }else {
+              this.info = res.data.info
+            }
+          }else {
+            this.$toast({
+              message:res.msg,
+              pisition:'middle',
+              duration:3000
+            })
+            this.$router.replace({path:'/Login'})
+          }
         },
         errorback:err => {
-          this.$toast({
-            message:err.msg,
-            pisition:'middle',
-            duration:3000
-          })
-          this.$indicator.close()
-          this.replace({path:'/Login'})
+          console.log(err)
         }
       })
     }
   }
 </script>
 <style scoped>
-
+  .info{
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    justify-content:center;;
+  }
+  .info p{
+    margin-top: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
 </style>

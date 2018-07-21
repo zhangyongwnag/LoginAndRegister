@@ -19,6 +19,7 @@
 </template>
 <script>
   import * as config from '../config'
+  import m from '../md5.min'
   export default {
     data() {
       return {
@@ -131,32 +132,44 @@
         });
         let data = {
           username:this.phone,
-          password:this.MD5password,
+          password:this.MD5password ? this.MD5password : m.md5(this.password),
         }
         this.$api_post({
           url:config.URL_LOGIN,
           data:data,
           callback:res => {
-            localStorage.setItem('token',res.data.token)
-            setTimeout(()=>{
-              this.$indicator.close()
+            this.$indicator.close()
+            if (res.ret == 200){
+              if (res.data.err_code == 1){
+                this.$toast({
+                  message:res.data.err_msg,
+                  pisition:'middle',
+                  duration:3000
+                })
+              }else {
+                localStorage.setItem('token',res.data.token)
+                localStorage.setItem('userID',res.data.uuid)
+                setTimeout(()=>{
+                  this.$toast({
+                    message:'登陆成功',
+                    pisition:'middle',
+                    duration:3000
+                  })
+                },1000)
+                setTimeout(()=>{
+                  this.$router.replace({path:'/Index'})
+                },1500)
+              }
+            }else {
               this.$toast({
-                message:'登陆成功',
+                message:res.msg,
                 pisition:'middle',
                 duration:3000
               })
-            },1000)
-            setTimeout(()=>{
-              this.$router.replace({path:'/Home'})
-            },1500)
+            }
           },
           errorback:err => {
-            this.$indicator.close()
-            this.$toast({
-              message:err.msg,
-              pisition:'middle',
-              duration:3000
-            })
+            console.log(err)
           }
         })
       }
