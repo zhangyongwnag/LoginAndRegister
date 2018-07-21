@@ -4,6 +4,7 @@ import qs from 'qs'
 //通用post
 export const api_post = (option) => {
   // var baseURL = ''; //生产环境/开发、测试时打包时路径(变量写在全局url.js中在index.html中引入)
+  option.data.app_key = '735F59558122F70A35670715E8D27055'//需要传的app_key
   var option = {
     url: option.url || '',
     data: option.data || {},
@@ -39,10 +40,10 @@ export const api_post = (option) => {
         // 不管状态如何，回调函数必须执行
         option.callback(response.data);
         if(response.data.code != "00"){
-          alert(response.data.msg)
+
         }
       } else {
-        alert(response.data.msg)
+
       }
     })
     .catch(function (error) { //失败之后回调

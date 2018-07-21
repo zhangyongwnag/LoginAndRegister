@@ -1,5 +1,10 @@
 <template>
   <div>
+    <mt-header :title="$route.meta.title">
+      <div slot="left" @click="clearAll">清空</div>
+      <div slot="right" @click="nextRegister">注册</div>
+    </mt-header>
+
     <mt-field :state="phoneStatus" label="手机号" placeholder="请输入手机号" :attr="{maxlength:11}" type="tel" v-model="phone"></mt-field>
     <mt-field :state="passwordStatus" label="密码" placeholder="请输入密码" type="password" v-model="password" ></mt-field>
     <mt-field :state="captchaStatus" label="验证码" v-model="captcha" type="number" :attr="{maxlength:4}" style="border-bottom: 1px #c3c3c3 solid">
@@ -10,18 +15,10 @@
     <div style="display:flex;justify-content:space-around;align-items: center;margin-top: 20px;">是否同意登录<mt-switch v-model="switchStatus"></mt-switch></div>
 
     <mt-button @click="login" :disabled="disabledStatus" style="background-color: deepskyblue;color: white;margin-top: 20px;" size="large">登录</mt-button>
-
-    <div style="display: flex;justify-content: center;align-items: center;margin-top: 100px;">
-      <mt-checklist
-        align="right"
-        v-model="checkStatus"
-        :options="checkList"
-        style="width: 70%">
-      </mt-checklist>
-    </div>
   </div>
 </template>
 <script>
+  import * as config from '../config'
   export default {
     data() {
       return {
@@ -36,18 +33,14 @@
         captchaStatus:'',
         switchStatus:false,
         disabledStatus:true,
-        checkStatus:[],
-        checkList:[
-          {
-            label:'存储用户名密码',
-            value:1
-          }
-          ],
+        MD5password:'',
       }
     },
     watch:{
       phone(v){
-        v.length == 11 ? this.phoneStatus = 'success' : this.phoneStatus = ''
+        if (v){
+          v.length == 11 ? this.phoneStatus = 'success' : this.phoneStatus = ''
+        }
       },
       password(v){
         v.length >= 1 ? this.passwordStatus = 'success' : this.passwordStatus = ''
@@ -59,10 +52,25 @@
         v ? this.disabledStatus = false : this.disabledStatus = true
       },
     },
+    created(){
+      this.phone = this.$route.query.phone
+      this.phone ? this.password = 'asdasdasdasd' : this.password = ''
+      this.MD5password = this.$route.query.password
+    },
     mounted(){
 
     },
     methods:{
+      clearAll(){
+        this.phone = ''
+        this.password = ''
+        this.captcha = ''
+        this.switchStatus = false
+        this.disabledStatus = true
+      },
+      nextRegister(){
+        this.$router.replace({path:'/Register'})
+      },
       getCaptchaCode(){
         //发请求得到验证码，这里假设验证码是2222，传给data
         this.code = 2222
@@ -109,7 +117,7 @@
             duration:3000
           })
           return
-        }else if (this.code != this.captcha){
+        }else if (this.code != this.captcha) {
           this.$toast({
             message:'请输入正确的验证码',
             pisition:'middle',
@@ -117,6 +125,40 @@
           })
           return
         }
+        this.$indicator.open({
+          text: '登录中...',
+          spinnerType: 'fading-circle'
+        });
+        let data = {
+          username:this.phone,
+          password:this.MD5password,
+        }
+        this.$api_post({
+          url:config.URL_LOGIN,
+          data:data,
+          callback:res => {
+            localStorage.setItem('token',res.data.token)
+            setTimeout(()=>{
+              this.$indicator.close()
+              this.$toast({
+                message:'登陆成功',
+                pisition:'middle',
+                duration:3000
+              })
+            },1000)
+            setTimeout(()=>{
+              this.$router.replace({path:'/Home'})
+            },1500)
+          },
+          errorback:err => {
+            this.$indicator.close()
+            this.$toast({
+              message:err.msg,
+              pisition:'middle',
+              duration:3000
+            })
+          }
+        })
       }
     }
   }

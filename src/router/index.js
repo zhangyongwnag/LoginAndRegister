@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 import index from '@/pages/index'
+import Home from '@/pages/Home'
 import Login from '@/pages/Login'
 import Register from '@/pages/Register'
 
@@ -37,6 +38,14 @@ export default new Router({
       component:Register,
       meta:{
         title:'注册'
+      }
+    },
+    {
+      path:'/Home',
+      name:'Home',
+      component:Home,
+      meta:{
+        title:'首页'
       }
     }
   ]
