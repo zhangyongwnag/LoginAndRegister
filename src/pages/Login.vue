@@ -5,14 +5,14 @@
       <div slot="right" @click="nextRegister">注册</div>
     </mt-header>
 
-    <mt-field :state="phoneStatus" label="手机号" placeholder="请输入手机号" :attr="{maxlength:11}" type="tel" v-model="phone"></mt-field>
-    <mt-field :state="passwordStatus" label="密码" placeholder="请输入密码" type="password" v-model="password" ></mt-field>
-    <mt-field :state="captchaStatus" label="验证码" v-model="captcha" type="number" :attr="{maxlength:4}" style="border-bottom: 1px #c3c3c3 solid">
+    <mt-field :state="phoneStatus" label="手机号" placeholder="请输入手机号" :attr="{maxlength:11}" type="tel" v-model.trim="phone"></mt-field>
+    <mt-field :state="passwordStatus" label="密码" placeholder="请输入密码" type="password" v-model.trim="password" ></mt-field>
+    <mt-field :state="captchaStatus" label="验证码" v-model.trim="captcha" type="number" :attr="{maxlength:4}" style="border-bottom: 1px #c3c3c3 solid">
       <span v-if="captchaStatis == '获取验证码'" @click="getCaptchaCode">{{captchaStatis}}</span>
       <span v-else>{{captchaStatis}}s</span>
     </mt-field>
 
-    <div style="display:flex;justify-content:space-around;align-items: center;margin-top: 20px;">是否同意登录<mt-switch v-model="switchStatus"></mt-switch></div>
+    <div style="display:flex;justify-content:space-around;align-items: center;margin-top: 20px;">是否同意登录<mt-switch v-model.trim="switchStatus"></mt-switch></div>
 
     <mt-button @click="login" :disabled="disabledStatus" style="background-color: deepskyblue;color: white;margin-top: 20px;" size="large">登录</mt-button>
   </div>
@@ -78,6 +78,21 @@
         this.$router.replace({path:'/Register'})
       },
       getCaptchaCode(){
+        if(!this.phone) {
+          this.$toast({
+            message: '请输入手机号',
+            pisition: 'middle',
+            duration: 3000
+          })
+          return
+        }else if (this.phone.length != 11){
+          this.$toast({
+            message: '请输入正确的手机号',
+            pisition: 'middle',
+            duration: 3000
+          })
+          return
+        }
         //发请求得到验证码，这里假设验证码是2222，传给data
         this.code = 2222
         this.time = 60

@@ -5,14 +5,14 @@
       <div slot="right" @click="nextLogin">登录</div>
     </mt-header>
 
-    <mt-field label="手机号" :state="phoneStatus" :attr="{maxlength:11}" v-model="phone" placeholder="请输入手机号" type="tel"></mt-field>
-    <mt-field label="密码" :state="passwordStatus" :attr="{maxlength:16}" v-model="password" placeholder="请输入密码" type="password"></mt-field>
-    <mt-field label="确认密码" :state="passwordTrueStatus" :attr="{maxlength:16}" v-model="passwordTrue" placeholder="请确认密码" type="password"></mt-field>
-    <mt-field label="验证码" :state="codeStatus" v-model="code" placeholder="输入验证码" style="border-bottom: 1px #c3c3c3 solid">
+    <mt-field label="手机号" :state="phoneStatus" :attr="{maxlength:11}" v-model.trim="phone" placeholder="请输入手机号" type="tel"></mt-field>
+    <mt-field label="密码" :state="passwordStatus" :attr="{maxlength:16}" v-model.trim="password" placeholder="请输入密码" type="password"></mt-field>
+    <mt-field label="确认密码" :state="passwordTrueStatus" :attr="{maxlength:16}" v-model.trim="passwordTrue" placeholder="请确认密码" type="password"></mt-field>
+    <mt-field label="验证码" :state="codeStatus" v-model.trim="code" placeholder="输入验证码" style="border-bottom: 1px #c3c3c3 solid">
       <div class="code" @click="createCode">{{checkCode}}</div>
     </mt-field>
 
-    <div style="display:flex;justify-content:space-around;align-items: center;margin-top: 20px;">我已同意注册该手机号<mt-switch v-model="switchStatus"></mt-switch></div>
+    <div style="display:flex;justify-content:space-around;align-items: center;margin-top: 20px;">我已同意注册该手机号<mt-switch v-model.trim="switchStatus"></mt-switch></div>
 
     <p style="text-align: center;color: #c3c3c3;margin-top: 10px;">（同意则停止刷新图片验证码倒计时）</p>
 
