@@ -35,6 +35,7 @@
         switchStatus:false,
         disabledStatus:true,
         MD5password:'',
+        messageboxTitle:'随机生成验证码：1000000'
       }
     },
     watch:{
@@ -93,8 +94,18 @@
           })
           return
         }
-        //发请求得到验证码，这里假设验证码是2222，传给data
-        this.code = 2222
+        //发请求得到验证码，这里随机生成，传给data
+        this.code = parseInt(Math.random()*10000)
+        let title = this.messageboxTitle.replace(1000000,this.code)
+        this.$messagebox.confirm(title, {
+          title: '测试验证码',
+          closeOnClickModal: false,   //点击model背景层不关闭MessageBox
+          showCancelButton: false,   //不显示取消按钮
+        }).then(() => {
+          this.captcha = this.code
+        }).catch(()=>{
+
+        });
         this.time = 60
         let int = setInterval(()=>{
           this.time --
